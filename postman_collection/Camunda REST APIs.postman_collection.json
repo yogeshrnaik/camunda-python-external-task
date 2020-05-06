@@ -1,0 +1,191 @@
+{
+	"info": {
+		"_postman_id": "0185a8d1-6a54-4a38-b5e6-6d3756a69430",
+		"name": "Camunda REST APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Process Definition",
+			"item": [
+				{
+					"name": "Start Instance",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{CAMUNDA_REST_URL}}/process-definition/key/{{key}}/start",
+							"host": [
+								"{{CAMUNDA_REST_URL}}"
+							],
+							"path": [
+								"process-definition",
+								"key",
+								"{{key}}",
+								"start"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Start Instance - DIGITAL_CARD_ORIGINATION Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{CAMUNDA_REST_URL}}/process-definition/key/{{key}}/start",
+									"host": [
+										"{{CAMUNDA_REST_URL}}"
+									],
+									"path": [
+										"process-definition",
+										"key",
+										"{{key}}",
+										"start"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 06 May 2020 14:07:53 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=20"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"links\": [\n        {\n            \"method\": \"GET\",\n            \"href\": \"http://localhost:8080/engine-rest/process-instance/fa512fed-8fa2-11ea-8743-0242ac110002\",\n            \"rel\": \"self\"\n        }\n    ],\n    \"id\": \"fa512fed-8fa2-11ea-8743-0242ac110002\",\n    \"definitionId\": \"DIGITAL_CARD_ORIGINATION:2:b32d2bae-8fa1-11ea-8743-0242ac110002\",\n    \"businessKey\": null,\n    \"caseInstanceId\": null,\n    \"ended\": false,\n    \"suspended\": false,\n    \"tenantId\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Instance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CAMUNDA_REST_URL}}/process-instance/fa512fed-8fa2-11ea-8743-0242ac110002",
+							"host": [
+								"{{CAMUNDA_REST_URL}}"
+							],
+							"path": [
+								"process-instance",
+								"fa512fed-8fa2-11ea-8743-0242ac110002"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Instance Response Example",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{CAMUNDA_REST_URL}}/process-instance/fa512fed-8fa2-11ea-8743-0242ac110002",
+									"host": [
+										"{{CAMUNDA_REST_URL}}"
+									],
+									"path": [
+										"process-instance",
+										"fa512fed-8fa2-11ea-8743-0242ac110002"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Cache-Control",
+									"value": "no-cache"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 06 May 2020 14:13:23 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=20"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"links\": [],\n    \"id\": \"fa512fed-8fa2-11ea-8743-0242ac110002\",\n    \"definitionId\": \"DIGITAL_CARD_ORIGINATION:2:b32d2bae-8fa1-11ea-8743-0242ac110002\",\n    \"businessKey\": null,\n    \"caseInstanceId\": null,\n    \"ended\": false,\n    \"suspended\": false,\n    \"tenantId\": null\n}"
+						}
+					]
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "External Task",
+			"item": [
+				{
+					"name": "Get External Task",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{CAMUNDA_REST_URL}}/external-task",
+							"host": [
+								"{{CAMUNDA_REST_URL}}"
+							],
+							"path": [
+								"external-task"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

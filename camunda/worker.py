@@ -113,18 +113,21 @@ class Worker:
                 taskId = context["id"]
                 variables = await action(context)
                 success = variables.get("success", True)
-                # variables = self._format(variables)
+                formatted_variables = self._format(variables)
 
                 if success:
                     print(f"Complete: Worker {self.workerId} Topic: {topicName} Success - marking task complete")
-                    if await self._complete(taskId, variables):
-                        print(f"Complete: Worker {self.workerId} Topic: {topicName} variables: {variables}")
+                    if await self._complete(taskId, formatted_variables):
+                        print(f"Complete: Worker {self.workerId} Topic: {topicName} "
+                              f"variables: {variables} formatted_variables: {formatted_variables}")
                 else:
                     errMsg = variables.get("errorMessage", "Task failed")
                     errDetails = variables.get("errorDetails", "Failed Task details")
-                    print(f"Failed: Worker {self.workerId} Topic: {topicName} variables: {variables}")
+                    print(f"Failed: Worker {self.workerId} Topic: {topicName} - marking task failed - "
+                          f"variables: {variables} formatted_variables: {formatted_variables}")
                     if await self._failure(taskId, errMsg, errDetails):
-                        print(f"Failed: Worker {self.workerId} Topic: {topicName} variables: {variables}")
+                        print(f"Failed: Worker {self.workerId} Topic: {topicName} "
+                              f"variables: {variables} formatted_variables: {formatted_variables}")
 
         print("Stopped")
 

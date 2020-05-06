@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AzureSettings">
-    <option name="appInsights" value="rO0ABXVyAEtbTGNvbS5taWNyb3NvZnQuYXBwbGljYXRpb25pbnNpZ2h0cy5wcmVmZXJlbmNlLkFwcGxpY2F0aW9uSW5zaWdodHNSZXNvdXJjZTvCzxEP0C2HbAIAAHhwAAAAAA==" />
-  </component>
   <component name="DBNavigator.Project.DataEditorManager">
     <record-view-column-sorting-type value="BY_INDEX" />
     <value-preview-text-wrapping value="true" />
@@ -468,50 +465,5 @@
   </component>
   <component name="DBNavigator.Project.StatementExecutionManager">
     <execution-variables />
-  </component>
-  <component name="InspectionProjectProfileManager">
-    <profile version="1.0">
-      <option name="myName" value="Project Default" />
-    </profile>
-    <version value="1.0" />
-  </component>
-  <component name="ProjectCodeStyleConfiguration">
-    <code_scheme name="Project" version="173">
-      <DBN-PSQL>
-        <case-options enabled="true">
-          <option name="KEYWORD_CASE" value="lower" />
-          <option name="FUNCTION_CASE" value="lower" />
-          <option name="PARAMETER_CASE" value="lower" />
-          <option name="DATATYPE_CASE" value="lower" />
-          <option name="OBJECT_CASE" value="preserve" />
-        </case-options>
-        <formatting-settings enabled="false" />
-      </DBN-PSQL>
-      <DBN-SQL>
-        <case-options enabled="true">
-          <option name="KEYWORD_CASE" value="lower" />
-          <option name="FUNCTION_CASE" value="lower" />
-          <option name="PARAMETER_CASE" value="lower" />
-          <option name="DATATYPE_CASE" value="lower" />
-          <option name="OBJECT_CASE" value="preserve" />
-        </case-options>
-        <formatting-settings enabled="false">
-          <option name="STATEMENT_SPACING" value="one_line" />
-          <option name="CLAUSE_CHOP_DOWN" value="chop_down_if_statement_long" />
-          <option name="ITERATION_ELEMENTS_WRAPPING" value="chop_down_if_not_single" />
-        </formatting-settings>
-      </DBN-SQL>
-    </code_scheme>
-  </component>
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/camunda-python-external-task.iml" filepath="$PROJECT_DIR$/camunda-python-external-task.iml" />
-    </modules>
-  </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.7 (camunda-python-external-task)" project-jdk-type="Python SDK">
-    <output url="file://$PROJECT_DIR$/out" />
-  </component>
-  <component name="VcsDirectoryMappings">
-    <mapping directory="" vcs="Git" />
   </component>
 </project>

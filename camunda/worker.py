@@ -111,14 +111,20 @@ class Worker:
             for context in r.json():
                 taskId = context["id"]
                 variables = await action(context)
-                success = variables.get("success", True)
+                bpmn_success = variables.get("bpmn_success", True)
                 formatted_variables = self._format(variables)
 
-                # if success:
-                print(f"Complete: Worker {self.workerId} Topic: {topicName} Success - marking task complete")
-                if await self._complete(taskId, formatted_variables):
-                    print(f"Complete: Worker {self.workerId} Topic: {topicName} "
+                if bpmn_success:
+                    print(f"Complete: Worker {self.workerId} Topic: {topicName} Success - marking task complete")
+                    if await self._complete(taskId, formatted_variables):
+                        print(f"Complete: Worker {self.workerId} Topic: {topicName} "
+                              f"variables: {variables} formatted_variables: {formatted_variables}")
+                else:
+                    bpmn_error_handled = await self._handleBPMNError(taskId, variables["errorCode"],
+                                                                     variables["errorMessage"], formatted_variables)
+                    print(f"BPMN Error Handled: {bpmn_error_handled} Worker {self.workerId} Topic: {topicName} "
                           f"variables: {variables} formatted_variables: {formatted_variables}")
+
                 # else:
                 #     errMsg = variables.get("errorMessage", "Task failed")
                 #     errDetails = variables.get("errorDetails", "Failed Task details")
@@ -229,6 +235,24 @@ class Worker:
         }
         if errorDetails:
             body["errorDetails"] = errorDetails
+
+        r = req.post(url, headers=header, json=body)
+
+        return r.status_code == 204
+
+    async def _handleBPMNError(self, id, errorCode, errorMessage, variables):
+        url = f"{self.baseUrl}/{id}/bpmnError"
+
+        header = {
+            "Content-Type": "application/json"
+        }
+
+        body = {
+            "workerId": self.workerId,
+            "errorCode": errorCode,
+            "errorMessage": errorMessage,
+            "variables": variables,
+        }
 
         r = req.post(url, headers=header, json=body)
 

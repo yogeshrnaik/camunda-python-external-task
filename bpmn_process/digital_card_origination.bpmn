@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_19hrtm3" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.7.1">
+  <bpmn:process id="DIGITAL_CARD_ORIGINATION" name="Digital Card Origination Workflow" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Start">
+      <bpmn:outgoing>Flow_0j4p00v</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0j4p00v" sourceRef="StartEvent_1" targetRef="GET_IOVATION_DATA" />
+    <bpmn:serviceTask id="GET_IOVATION_DATA" name="Get IOVATION Data" camunda:type="external" camunda:topic="GET_IOVATION_DATA">
+      <bpmn:incoming>Flow_0j4p00v</bpmn:incoming>
+      <bpmn:outgoing>Flow_1wmkd7p</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="GET_SENTILINK_DATA" name="Get Sentilink Data" camunda:type="external" camunda:topic="GET_SENTILINK_DATA">
+      <bpmn:incoming>Flow_0po9o2d</bpmn:incoming>
+      <bpmn:outgoing>Flow_1wdthrq</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_1gws1d2" name="End">
+      <bpmn:incoming>Flow_1wdthrq</bpmn:incoming>
+      <bpmn:incoming>Flow_0nn9m4j</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1wdthrq" sourceRef="GET_SENTILINK_DATA" targetRef="Event_1gws1d2" />
+    <bpmn:exclusiveGateway id="Gateway_0r4lwnd">
+      <bpmn:incoming>Flow_1wmkd7p</bpmn:incoming>
+      <bpmn:outgoing>Flow_0po9o2d</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1pc64il</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0po9o2d" name="Yes" sourceRef="Gateway_0r4lwnd" targetRef="GET_SENTILINK_DATA">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{success}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1pc64il" name="No" sourceRef="Gateway_0r4lwnd" targetRef="Activity_1wprgi0">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{not success}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1wmkd7p" sourceRef="GET_IOVATION_DATA" targetRef="Gateway_0r4lwnd" />
+    <bpmn:serviceTask id="Activity_1wprgi0" name="Reject Application" camunda:type="external" camunda:topic="REJECT_APPLICATION">
+      <bpmn:incoming>Flow_1pc64il</bpmn:incoming>
+      <bpmn:outgoing>Flow_0nn9m4j</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0nn9m4j" sourceRef="Activity_1wprgi0" targetRef="Event_1gws1d2" />
+    <bpmn:boundaryEvent id="Event_07atv6t" name="SentlinkFraud" attachedToRef="GET_SENTILINK_DATA">
+      <bpmn:outgoing>Flow_1jcs8qn</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_10tnmz7" errorRef="Error_0ifz7c7" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_1jcs8qn" sourceRef="Event_07atv6t" targetRef="Activity_1a3xjsd" />
+    <bpmn:serviceTask id="Activity_1a3xjsd" name="Handle Sentlink Fraud case" camunda:type="external" camunda:topic="SENTILINK_FRAUD">
+      <bpmn:incoming>Flow_1jcs8qn</bpmn:incoming>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmn:error id="Error_0ifz7c7" name="SentlinkDetectedFraud" errorCode="SentlinkDetectedFraud" camunda:errorMessage="SentlinkDetectedFraud" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="DIGITAL_CARD_ORIGINATION">
+      <bpmndi:BPMNEdge id="Flow_1wdthrq_di" bpmnElement="Flow_1wdthrq">
+        <di:waypoint x="750" y="117" />
+        <di:waypoint x="822" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0j4p00v_di" bpmnElement="Flow_0j4p00v">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0po9o2d_di" bpmnElement="Flow_0po9o2d">
+        <di:waypoint x="525" y="117" />
+        <di:waypoint x="650" y="117" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="571" y="125" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1pc64il_di" bpmnElement="Flow_1pc64il">
+        <di:waypoint x="500" y="142" />
+        <di:waypoint x="500" y="590" />
+        <di:waypoint x="650" y="590" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="607" y="552" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wmkd7p_di" bpmnElement="Flow_1wmkd7p">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="475" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nn9m4j_di" bpmnElement="Flow_0nn9m4j">
+        <di:waypoint x="750" y="590" />
+        <di:waypoint x="840" y="590" />
+        <di:waypoint x="840" y="135" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1jcs8qn_di" bpmnElement="Flow_1jcs8qn">
+        <di:waypoint x="700" y="175" />
+        <di:waypoint x="700" y="290" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="185" y="142" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1jpwzvb_di" bpmnElement="GET_IOVATION_DATA">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1gws1d2_di" bpmnElement="Event_1gws1d2">
+        <dc:Bounds x="822" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="830" y="75" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1bfyfm3_di" bpmnElement="GET_SENTILINK_DATA">
+        <dc:Bounds x="650" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0r4lwnd_di" bpmnElement="Gateway_0r4lwnd" isMarkerVisible="true">
+        <dc:Bounds x="475" y="92" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1wprgi0_di" bpmnElement="Activity_1wprgi0">
+        <dc:Bounds x="650" y="550" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1w8g2v0_di" bpmnElement="Activity_1a3xjsd">
+        <dc:Bounds x="640" y="290" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0nfh4ps_di" bpmnElement="Event_07atv6t">
+        <dc:Bounds x="682" y="139" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="707" y="183" width="68" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

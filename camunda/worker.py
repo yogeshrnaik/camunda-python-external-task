@@ -77,7 +77,6 @@ class Worker:
 
         # This is only the boilerplate necessary to work
         # asynchronously. All the real work is done by _subscribe
-
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop.run_until_complete(
@@ -115,19 +114,19 @@ class Worker:
                 success = variables.get("success", True)
                 formatted_variables = self._format(variables)
 
-                if success:
-                    print(f"Complete: Worker {self.workerId} Topic: {topicName} Success - marking task complete")
-                    if await self._complete(taskId, formatted_variables):
-                        print(f"Complete: Worker {self.workerId} Topic: {topicName} "
-                              f"variables: {variables} formatted_variables: {formatted_variables}")
-                else:
-                    errMsg = variables.get("errorMessage", "Task failed")
-                    errDetails = variables.get("errorDetails", "Failed Task details")
-                    print(f"Failed: Worker {self.workerId} Topic: {topicName} - marking task failed - "
+                # if success:
+                print(f"Complete: Worker {self.workerId} Topic: {topicName} Success - marking task complete")
+                if await self._complete(taskId, formatted_variables):
+                    print(f"Complete: Worker {self.workerId} Topic: {topicName} "
                           f"variables: {variables} formatted_variables: {formatted_variables}")
-                    if await self._failure(taskId, errMsg, errDetails):
-                        print(f"Failed: Worker {self.workerId} Topic: {topicName} "
-                              f"variables: {variables} formatted_variables: {formatted_variables}")
+                # else:
+                #     errMsg = variables.get("errorMessage", "Task failed")
+                #     errDetails = variables.get("errorDetails", "Failed Task details")
+                #     print(f"Failed: Worker {self.workerId} Topic: {topicName} - marking task failed - "
+                #           f"variables: {variables} formatted_variables: {formatted_variables}")
+                #     if await self._failure(taskId, errMsg, errDetails):
+                #         print(f"Failed: Worker {self.workerId} Topic: {topicName} "
+                #               f"variables: {variables} formatted_variables: {formatted_variables}")
 
         print("Stopped")
 

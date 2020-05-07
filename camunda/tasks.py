@@ -1,13 +1,19 @@
 # Example
 # Worker for "Camunda for Non-Java Developers"
 import threading
+import time
 
 from camunda.worker import Worker
 
 
+def random_success():
+    current_milli_time = lambda: int(round(time.time() * 1000))
+    return current_milli_time() % 2 == 0
+
+
 async def get_iovation_data(context):
     print(f"get_iovation_data: {context}")
-    return {"success": True, "iokey1": "value1", "iokey2": 2}
+    return {"success": random_success(), "iokey1": "value1", "iokey2": 2}
 
 
 async def get_sentilink_data(context):

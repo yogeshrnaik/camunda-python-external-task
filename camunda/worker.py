@@ -31,6 +31,8 @@ class Worker:
         "maxTasks": 2,
         "lockDuration": 10000,
         "asyncResponseTimeout": 5000,
+        "retries": 3,
+        "retryTimeout": 1000,
     }
 
     def __init__(self, baseUrl=LOCAL_BASEURL, options={}):
@@ -111,28 +113,28 @@ class Worker:
             for context in r.json():
                 taskId = context["id"]
                 variables = await action(context)
+                success = variables.get("success", True)
                 bpmn_success = variables.get("bpmn_success", True)
                 formatted_variables = self._format(variables)
 
-                if bpmn_success:
+                if success and bpmn_success:
                     print(f"Complete: Worker {self.workerId} Topic: {topicName} Success - marking task complete")
                     if await self._complete(taskId, formatted_variables):
                         print(f"Complete: Worker {self.workerId} Topic: {topicName} "
                               f"variables: {variables} formatted_variables: {formatted_variables}")
-                else:
+                elif success and not bpmn_success:
                     bpmn_error_handled = await self._handleBPMNError(taskId, variables["errorCode"],
                                                                      variables["errorMessage"], formatted_variables)
                     print(f"BPMN Error Handled: {bpmn_error_handled} Worker {self.workerId} Topic: {topicName} "
                           f"variables: {variables} formatted_variables: {formatted_variables}")
-
-                # else:
-                #     errMsg = variables.get("errorMessage", "Task failed")
-                #     errDetails = variables.get("errorDetails", "Failed Task details")
-                #     print(f"Failed: Worker {self.workerId} Topic: {topicName} - marking task failed - "
-                #           f"variables: {variables} formatted_variables: {formatted_variables}")
-                #     if await self._failure(taskId, errMsg, errDetails):
-                #         print(f"Failed: Worker {self.workerId} Topic: {topicName} "
-                #               f"variables: {variables} formatted_variables: {formatted_variables}")
+                elif not success:
+                    errMsg = variables.get("errorMessage", "Task failed")
+                    errDetails = variables.get("errorDetails", "Failed Task details")
+                    print(f"Failed: Worker {self.workerId} Topic: {topicName} - marking task failed - "
+                          f"variables: {variables} formatted_variables: {formatted_variables}")
+                    if await self._failure(taskId, errMsg, errDetails):
+                        print(f"Failed: Worker {self.workerId} Topic: {topicName} "
+                              f"variables: {variables} formatted_variables: {formatted_variables}")
 
         print("Stopped")
 
@@ -232,6 +234,8 @@ class Worker:
         body = {
             "workerId": self.workerId,
             "errorMessage": errorMessage,
+            "retries": self.options["retries"],
+            "retryTimeout": self.options["retryTimeout"],
         }
         if errorDetails:
             body["errorDetails"] = errorDetails

@@ -14,7 +14,8 @@ def random_success():
 async def get_iovation_data(context):
     # put the business logic here
     print(f"get_iovation_data: {context}")
-    return {"success": random_success(), "iokey1": "value1", "iokey2": 2}
+    success = random_success()
+    return {"success": False, "iokey1": "value1", "iokey2": 2}
 
 
 async def get_sentilink_data(context):

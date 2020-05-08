@@ -6,7 +6,7 @@ import time
 from camunda.worker import Worker
 
 
-def random_success():
+def random_true():
     current_milli_time = lambda: int(round(time.time() * 1000))
     return current_milli_time() % 2 == 0
 
@@ -14,14 +14,14 @@ def random_success():
 async def get_iovation_data(context):
     # put the business logic here
     print(f"get_iovation_data: {context}")
-    success = random_success()
+    success = random_true()
     return {"success": False, "iokey1": "value1", "iokey2": 2}
 
 
 async def get_sentilink_data(context):
     # put the business logic here
     print(f"get_sentilink_data: {context}")
-    success = random_success()
+    success = random_true()
     result = {"bpmn_success": success, "skey1": "value1", "skey2": 2}
     if not success:
         result["errorCode"] = "SentlinkDetectedFraud"

@@ -15,6 +15,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import asyncio
+import time
 
 import requests as req
 
@@ -106,9 +107,9 @@ class Worker:
             r = await self._fetchAndLock(topicName)
 
             if r.json():
-                print(f"Fetch: Worker {self.workerId} Topic: {topicName}")
+                print(f"Fetch: Work found - Worker ID: {self.workerId} Topic: {topicName}")
             else:
-                print(f"Fetch: No work {self.workerId} Topic: {topicName}")
+                print(f"Fetch: No work - Worker ID: {self.workerId} Topic: {topicName}")
 
             for context in r.json():
                 taskId = context["id"]
@@ -118,22 +119,22 @@ class Worker:
                 formatted_variables = self._format(variables)
 
                 if success and bpmn_success:
-                    print(f"Complete: Worker {self.workerId} Topic: {topicName} Success - marking task complete")
+                    print(f"Complete: Worker ID: {self.workerId} Topic: {topicName} Success - marking task complete")
                     if await self._complete(taskId, formatted_variables):
-                        print(f"Complete: Worker {self.workerId} Topic: {topicName} "
+                        print(f"Complete: WorkerID:  {self.workerId} Topic: {topicName} "
                               f"variables: {variables} formatted_variables: {formatted_variables}")
                 elif success and not bpmn_success:
                     bpmn_error_handled = await self._handleBPMNError(taskId, variables["errorCode"],
                                                                      variables["errorMessage"], formatted_variables)
-                    print(f"BPMN Error Handled: {bpmn_error_handled} Worker {self.workerId} Topic: {topicName} "
+                    print(f"BPMN Error Handled: {bpmn_error_handled} Worker ID: {self.workerId} Topic: {topicName} "
                           f"variables: {variables} formatted_variables: {formatted_variables}")
                 elif not success:
                     errMsg = variables.get("errorMessage", "Task failed")
                     errDetails = variables.get("errorDetails", "Failed Task details")
-                    print(f"Failed: Worker {self.workerId} Topic: {topicName} - marking task failed - "
+                    print(f"Failed: Worker ID: {self.workerId} Topic: {topicName} - marking task failed - "
                           f"variables: {variables} formatted_variables: {formatted_variables}")
                     if await self._failure(taskId, errMsg, errDetails):
-                        print(f"Failed: Worker {self.workerId} Topic: {topicName} "
+                        print(f"Failed: Worker ID: {self.workerId} Topic: {topicName} "
                               f"variables: {variables} formatted_variables: {formatted_variables}")
 
         print("Stopped")
@@ -231,10 +232,13 @@ class Worker:
             "Content-Type": "application/json"
         }
 
+        current_milli_time = lambda: int(round(time.time() * 1000))
+        retries = 0 if current_milli_time() % 2 == 0 else 1
+        print(f"setting retries to: {retries} for task: {id}")
         body = {
             "workerId": self.workerId,
             "errorMessage": errorMessage,
-            "retries": self.options["retries"],
+            "retries": retries,
             "retryTimeout": self.options["retryTimeout"],
         }
         if errorDetails:

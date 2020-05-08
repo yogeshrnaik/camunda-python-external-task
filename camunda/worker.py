@@ -83,11 +83,11 @@ class Worker:
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop.run_until_complete(
-            self._subscribe(topicName, variableNames, action)
+            self._subscribe(topicName, action)
         )
         loop.close()
 
-    async def _subscribe(self, topicName, variableNames, action):
+    async def _subscribe(self, topicName, action):
         """
         PRIVATE
         Subscribe to work at a specific topic.
@@ -96,8 +96,6 @@ class Worker:
         ----------
         topicName : string
             Name of the topic of the External Task.
-        variableNames : [ string ]
-            Variables to be fetched from the task execution.
         action : dict -> dict
             Work to be done. Receives the execution context and returns
             variables to be added (or updated) to the execution.

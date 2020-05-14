@@ -1,9 +1,12 @@
 # Example
 # Worker for "Camunda for Non-Java Developers"
+import logging
 import threading
 import time
 
-from camunda.worker import Worker
+from camunda.external_task.external_task_worker import ExternalTaskWorker
+
+logger = logging.getLogger(__name__)
 
 
 def random_true():
@@ -13,45 +16,56 @@ def random_true():
 
 async def get_iovation_data(context):
     # put the business logic here
-    print(f"get_iovation_data: {context}")
-    success = random_true()
-    return {"success": success, "iokey1": "value1", "iokey2": 2}
+    logger.info(f"get_iovation_data: {context}")
+    is_error = random_true()
+    return {"error": is_error, "iokey1": "value1", "iokey2": 2}
 
 
 async def get_sentilink_data(context):
     # put the business logic here
-    print(f"get_sentilink_data: {context}")
-    success = random_true()
-    result = {"bpmn_success": success, "skey1": "value1", "skey2": 2}
-    if not success:
+    logger.info(f"get_sentilink_data: {context}")
+    is_bpmn_error = random_true()
+    result = {"bpmn_error": is_bpmn_error, "skey1": "value1", "skey2": 2}
+    if is_bpmn_error:
         result["errorCode"] = "SentlinkDetectedFraud"
         result["errorMessage"] = "Sentlink Fraud detected"
     return result
 
 
-customOptions = {"maxTasks": 1, "pollingInterval": 2000, "asyncResponseTimeout": 5000}
+custom_options = {"maxTasks": 1, "pollingInterval": 2000, "asyncResponseTimeout": 5000}
 
 
 def get_iovation_data_task():
-    w = Worker(options=customOptions)
-    w.subscribe("GET_IOVATION_DATA", [], get_iovation_data)
+    w = ExternalTaskWorker(options=custom_options)
+    w.subscribe("GET_IOVATION_DATA", get_iovation_data)
 
 
 def get_sentilink_data_task():
-    w = Worker(options=customOptions)
-    w.subscribe("GET_SENTILINK_DATA", [], get_sentilink_data)
+    w = ExternalTaskWorker(options=custom_options)
+    w.subscribe("GET_SENTILINK_DATA", get_sentilink_data)
 
 
-t1 = threading.Thread(target=get_iovation_data_task, args=())
-t2 = threading.Thread(target=get_sentilink_data_task, args=())
+def configure_logging():
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s",
+                        handlers=[logging.StreamHandler()])
 
-t1.start()
-t2.start()
 
-# wait until thread 1 is completely executed
-t1.join()
-# wait until thread 2 is completely executed
-t2.join()
+def main():
+    configure_logging()
+    t1 = threading.Thread(target=get_iovation_data_task, args=())
+    t2 = threading.Thread(target=get_sentilink_data_task, args=())
 
-# both threads completely executed
-print("Done!")
+    t1.start()
+    t2.start()
+
+    # wait until thread 1 is completely executed
+    t1.join()
+    # wait until thread 2 is completely executed
+    t2.join()
+
+    # both threads completely executed
+    print("Done!")
+
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0qgc7ib" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.7.1">
+  <bpmn:process id="EXTERNAL_TASK_PROCESS" name="EXTERNAL_TASK_PROCESS" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Start">
+      <bpmn:outgoing>Flow_1l1q0fj</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1l1q0fj" sourceRef="StartEvent_1" targetRef="FIRST_STEP" />
+    <bpmn:serviceTask id="FIRST_STEP" name="First Step" camunda:type="external" camunda:topic="FIRST_TOPIC">
+      <bpmn:incoming>Flow_1l1q0fj</bpmn:incoming>
+      <bpmn:outgoing>Flow_1we05qv</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1we05qv" sourceRef="FIRST_STEP" targetRef="SECOND_STEP" />
+    <bpmn:serviceTask id="SECOND_STEP" name="Second Step" camunda:type="external" camunda:topic="SECOND_TOPIC">
+      <bpmn:incoming>Flow_1we05qv</bpmn:incoming>
+      <bpmn:outgoing>Flow_01k47ol</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_01k47ol" sourceRef="SECOND_STEP" targetRef="Event_0sklefy" />
+    <bpmn:endEvent id="Event_0sklefy" name="End">
+      <bpmn:incoming>Flow_01k47ol</bpmn:incoming>
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="EXTERNAL_TASK_PROCESS">
+      <bpmndi:BPMNEdge id="Flow_1l1q0fj_di" bpmnElement="Flow_1l1q0fj">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="320" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1we05qv_di" bpmnElement="Flow_1we05qv">
+        <di:waypoint x="420" y="117" />
+        <di:waypoint x="530" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01k47ol_di" bpmnElement="Flow_01k47ol">
+        <di:waypoint x="630" y="117" />
+        <di:waypoint x="762" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="185" y="142" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1yum3j1_di" bpmnElement="FIRST_STEP">
+        <dc:Bounds x="320" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ffbh43_di" bpmnElement="SECOND_STEP">
+        <dc:Bounds x="530" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0sklefy_di" bpmnElement="Event_0sklefy">
+        <dc:Bounds x="762" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="770" y="142" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

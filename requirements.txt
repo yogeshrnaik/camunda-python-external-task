@@ -1,2 +1,2 @@
-requests==2.23.0
+aiohttp_requests
 git+https://github.com/trustfactors/camunda-external-task-client-python.git/#egg=camunda-external-task-client-python

@@ -1,9 +1,11 @@
 # Example
 # Worker for "Camunda for Non-Java Developers"
+import asyncio
 import logging
-import threading
 import time
+from datetime import datetime
 
+from camunda.external_task.external_task import ExternalTask
 from camunda.external_task.external_task_worker import ExternalTaskWorker
 
 logger = logging.getLogger(__name__)
@@ -14,35 +16,28 @@ def random_true():
     return current_milli_time() % 2 == 0
 
 
-async def get_iovation_data(context):
+async def get_iovation_data(task: ExternalTask):
     # put the business logic here
-    logger.info(f"get_iovation_data: {context}")
-    is_error = random_true()
-    return {"error": is_error, "iokey1": "value1", "iokey2": 2}
+    logger.info(f"get_iovation_data: {task}")
+    failure = random_true()
+    if failure:
+        return task.failure("iovation task failed", "failed iovation task details", 3, 5000)
+
+    return task.complete({"success": True, "iovation_task_completed_on": str(datetime.now())})
 
 
-async def get_sentilink_data(context):
+async def get_sentilink_data(task: ExternalTask):
     # put the business logic here
-    logger.info(f"get_sentilink_data: {context}")
+    logger.info(f"get_sentilink_data: {task}")
     is_bpmn_error = random_true()
-    result = {"bpmn_error": is_bpmn_error, "skey1": "value1", "skey2": 2}
+
     if is_bpmn_error:
-        result["errorCode"] = "SentlinkDetectedFraud"
-        result["errorMessage"] = "Sentlink Fraud detected"
-    return result
+        return task.bpmn_error("SentlinkDetectedFraud")
+
+    return task.complete({"success": True, "sentilink_task_completed_on": str(datetime.now())})
 
 
-custom_options = {"maxTasks": 1, "pollingInterval": 2000, "asyncResponseTimeout": 5000}
-
-
-def get_iovation_data_task():
-    w = ExternalTaskWorker(options=custom_options)
-    w.subscribe("GET_IOVATION_DATA", get_iovation_data)
-
-
-def get_sentilink_data_task():
-    w = ExternalTaskWorker(options=custom_options)
-    w.subscribe("GET_SENTILINK_DATA", get_sentilink_data)
+custom_config = {"maxTasks": 1, "pollingInterval": 2000, "asyncResponseTimeout": 5000}
 
 
 def configure_logging():
@@ -50,22 +45,18 @@ def configure_logging():
                         handlers=[logging.StreamHandler()])
 
 
-def main():
+async def main():
     configure_logging()
-    t1 = threading.Thread(target=get_iovation_data_task, args=())
-    t2 = threading.Thread(target=get_sentilink_data_task, args=())
+    loop = asyncio.get_event_loop()
 
-    t1.start()
-    t2.start()
+    iovation_topic = loop.create_task(ExternalTaskWorker(config=custom_config)
+                                      .subscribe(["GET_IOVATION_DATA"], get_iovation_data))
 
-    # wait until thread 1 is completely executed
-    t1.join()
-    # wait until thread 2 is completely executed
-    t2.join()
+    sentilink_topic = loop.create_task(ExternalTaskWorker(config=custom_config)
+                                       .subscribe(["GET_SENTILINK_DATA"], get_sentilink_data))
 
-    # both threads completely executed
-    print("Done!")
+    await asyncio.gather(iovation_topic, sentilink_topic)
 
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())

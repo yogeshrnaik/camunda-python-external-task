@@ -1,0 +1,30 @@
+https://docs.camunda.org/manual/7.9/reference/rest/history/external-task-log/
+
+Get External Task List
+{{CAMUNDA_REST_URL}}/external-task?processInstanceId=85c6e370-c1ca-11ea-8bfb-0a58a9feac2a
+
+To get current task of a workflow
+
+
+
+
+
+
+https://docs.camunda.org/manual/7.9/reference/rest/history/activity-instance/get-activity-instance-query/
+Get all activities so far happended for a workflow id / process instance id
+
+
+
+
+
+https://docs.camunda.org/manual/7.9/reference/rest/history/process-instance/get-process-instance-query/
+Get Process Instances List
+{{CAMUNDA_REST_URL}}/history/process-instance?processDefinitionKey=DIGITAL_FIRST_CARD_ORIGINATION&completed=true
+
+
+
+
+Skip task in Camunda
+https://forum.camunda.org/t/how-to-skip-a-task/12398
+https://forum.camunda.org/t/skip-task-in-camunda-using-processinstancemodification/3924/6
+https://docs.camunda.org/manual/latest/reference/rest/process-instance/post-modification/
